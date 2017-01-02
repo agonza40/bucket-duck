@@ -1,0 +1,15 @@
+{
+  "name": "bucket-duck",
+  "version": "0.0.1",
+  "description": "A redux module containing a reducer and actions for a bucket widget. ",
+  "main": "index.js",
+  "scripts": {
+    "test": "./node_modules/.bin/mocha tests/**/*.js"
+  },
+  "author": "Andres Gonzalez",
+  "license": "MIT",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^3.2.0"
+  }
+}
