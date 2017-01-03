@@ -1,3 +1,10 @@
+# libraries/dependencies
 node_modules/
 
+# system files
 .DS_Store
+
+# build artifacts
+src/**/*.js
+tests/**/*.js
+dist/

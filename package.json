@@ -4,6 +4,7 @@
   "description": "A redux module containing a reducer and actions for a bucket widget. ",
   "main": "index.js",
   "scripts": {
+    "build-test": "tsc -p test-tsconfig.json",
     "test": "./node_modules/.bin/mocha tests/**/*.js"
   },
   "author": "Andres Gonzalez",
