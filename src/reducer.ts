@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import * as ACTIONS from './actions'
+import {ActionType, REDUX_INIT} from './actions'
 import {State} from './types'
 
 export const INITIAL_STATE = {
@@ -18,7 +18,7 @@ function selectItem (state, action) {
   selectedItems.push(item)
   return {
     selectedItems,
-    nonSelectedItems: _.without()
+    nonSelectedItems: _.without(nonSelectedItems, )
   }
 }
 
@@ -26,42 +26,34 @@ function deselectItem () {
 
 }
 
-const actionFunctions = {
-  [ACTIONS.DOUBLE_CLICK_ITEM] (state, {isSelectedItem, index}) {
-    const nextState = {
-      hoveredItem: null
-    }
-    if (isSelectedItem) {
-      deselectItem
-    } else {
-      selectItem
-    }
-    return nextState
-  },
-  [ACTIONS.CLICK_ITEM] (state, action) {
+export default function reducer<T> (state:State<T>, action) {
+  let nextState
+  switch(action.type) {
+      case ActionType.DOUBLE_CLICK_ITEM:
+        nextState = {
+          hoveredItem: null
+        }
+        if (action.isSelectedItem) {
+          deselectItem
+        } else {
+          selectItem
+        }
 
-  },
-  [ACTIONS.HOVER_NEXT_ITEM] (state, action) {
+      case ActionType.CLICK_ITEM:
 
-  },
-  [ACTIONS.HOVER_PREV_ITEM] (state, action) {
+      case ActionType.HOVER_NEXT_ITEM:
 
-  },
-  [ACTIONS.SELECT_ITEM] (state, action) {
+      case ActionType.HOVER_PREV_ITEM:
 
-  },
-  [ACTIONS.DESELECT_ITEM] (state, action) {
+      case ActionType.SELECT_ITEM:
 
-  },
-  [ACTIONS.REDUX_INIT]: _.noop
-}
+      case ActionType.DESELECT_ITEM:
 
-export default function reducer (state, action) {
-  const reducerFunction = actionFunctions[action.type]
-
-  if (reducerFunction === undefined) {
-    throw new Error(`Action ${action.type} unrecognized`)
+      case REDUX_INIT:
+        break
+      default:
+        throw new Error(`Action ${action.type} unrecognized`)
   }
 
-  return _.defaults(reducerFunction(state, action), state)
+  return _.defaults(nextState, state)
 }

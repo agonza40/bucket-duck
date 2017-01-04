@@ -1,31 +1,57 @@
-export function simpleAction (action) {
+
+export const REDUX_INIT = '@@redux/init'
+
+export enum ActionType {
+  CLICK_ITEM,
+  DOUBLE_CLICK_ITEM,
+  SELECT_ITEM,
+  DESELECT_ITEM,
+  HOVER_NEXT_ITEM,
+  HOVER_PREV_ITEM
+}
+export namespace ActionType {
+  function asString(type:ActionType) {
+    return ActionType[type]
+  }
+}
+
+export type SimpleAction <T extends ActionType> = {type:T}
+export function simpleAction <T extends ActionType>(action:T):SimpleAction<T> {
   return {
-    get type () {
+    get type ():T {
       return action
     }
   }
 }
 
-export const REDUX_INIT = '@@redux/init'
+const {
+  CLICK_ITEM,
+  DOUBLE_CLICK_ITEM,
+  SELECT_ITEM,
+  DESELECT_ITEM,
+  HOVER_NEXT_ITEM,
+  HOVER_PREV_ITEM
+} = ActionType
 
-export function dragItem () {
-
+export interface ClickItem {
+  type: ActionType.CLICK_ITEM;
+  index: number;
 }
 
-export function dropItem () {
-
-}
-
-export const CLICK_ITEM = 'CLICK_ITEM'
-export function clickItem (isSelectedItem, itemIndex) {
+export function clickItem (index:number):ClickItem {
   return {
     type: CLICK_ITEM,
-    index: itemIndex
+    index
   }
 }
 
-export const DOUBLE_CLICK_ITEM = 'DOUBLE_CLICK_ITEM'
-export function doubleClickItem (isSelectedItem, index) {
+export interface DoubleClickItem {
+  type: ActionType.DOUBLE_CLICK_ITEM;
+  isSelectedItem:boolean;
+  index:number;
+}
+
+export function doubleClickItem (isSelectedItem:boolean, index:number):DoubleClickItem {
   return {
     type: DOUBLE_CLICK_ITEM,
     isSelectedItem,
@@ -33,25 +59,39 @@ export function doubleClickItem (isSelectedItem, index) {
   }
 }
 
-export const SELECT_ITEM = 'SELECT_ITEM'
-export function selectItem (isSelectedItem, index) {
+export interface SelectItem {
+  type:ActionType.SELECT_ITEM;
+  index:number;
+}
+
+export function selectItem (index:number):SelectItem {
   return {
     type: SELECT_ITEM,
-    isSelectedItem,
     index
   }
 }
-export const DESELECT_ITEM = 'DESELECT_ITEM'
-export function deselectItem (isSelectedItem, index) {
+
+export interface DeselectItem {
+  type:ActionType.DESELECT_ITEM;
+  index:number;
+}
+
+export function deselectItem (index:number):DeselectItem {
   return {
     type: DESELECT_ITEM,
-    isSelectedItem,
     index
   }
 }
 
-export const HOVER_NEXT_ITEM = 'HOVER_NEXT_ITEM'
-export const selectNextItem = simpleAction(HOVER_NEXT_ITEM)
+type HoverNextItem = SimpleAction<ActionType.HOVER_NEXT_ITEM>
+export const selectNextItem:HoverNextItem = simpleAction(HOVER_NEXT_ITEM)
 
-export const HOVER_PREV_ITEM = 'HOVER_PREV_ITEM'
-export const selectPrevItem = simpleAction(HOVER_PREV_ITEM)
+type HoverPrevItem = SimpleAction<ActionType.HOVER_PREV_ITEM>
+export const selectPrevItem:HoverPrevItem = simpleAction(HOVER_PREV_ITEM)
+
+export type Action = ClickItem |
+  DoubleClickItem |
+  SelectItem |
+  DeselectItem |
+  HoverNextItem |
+  HoverPrevItem
