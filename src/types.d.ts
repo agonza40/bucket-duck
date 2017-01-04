@@ -8,3 +8,7 @@ export interface State<T> {
   subtitleAtrr?: keyof T,
   valueAttr: keyof T
 }
+
+export type StatePartial<T> = {
+  [K in keyof State<T>]?:State<T>[K]
+}

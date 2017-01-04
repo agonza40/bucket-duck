@@ -1,5 +1,5 @@
-
 export const REDUX_INIT = '@@redux/init'
+export type Init = {type: '@@redux/init'}
 
 export enum ActionType {
   CLICK_ITEM,
@@ -9,6 +9,7 @@ export enum ActionType {
   HOVER_NEXT_ITEM,
   HOVER_PREV_ITEM
 }
+
 export namespace ActionType {
   function asString(type:ActionType) {
     return ActionType[type]
@@ -94,4 +95,5 @@ export type Action = ClickItem |
   SelectItem |
   DeselectItem |
   HoverNextItem |
-  HoverPrevItem
+  HoverPrevItem |
+  Init

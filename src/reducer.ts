@@ -1,6 +1,6 @@
-import _ from 'lodash'
-import {ActionType, REDUX_INIT} from './actions'
-import {State} from './types'
+import * as _ from 'lodash'
+import {ActionType, REDUX_INIT, Action} from './actions'
+import {State, StatePartial} from './types'
 
 export const INITIAL_STATE = {
   hoveredItem: null,
@@ -12,21 +12,34 @@ export const INITIAL_STATE = {
   valueAttr: ''
 }
 
-function selectItem (state, action) {
+
+function selectItem<T> (state:State<T>, action):StatePartial<T> {
   const {nonSelectedItems, selectedItems} = state
   const item = nonSelectedItems[action.index]
   selectedItems.push(item)
   return {
     selectedItems,
-    nonSelectedItems: _.without(nonSelectedItems, )
+    nonSelectedItems: _.without(nonSelectedItems, item)
   }
 }
 
-function deselectItem () {
-
+function deselectItem<T> (state:State<T>, action):StatePartial<T> {
+  const {nonSelectedItems, selectedItems} = state
+  const item = selectedItems[action.index]
+  nonSelectedItems.push(item)
+  return {
+    selectedItems: _.without(selectedItems, item),
+    nonSelectedItems
+  }
 }
 
-export default function reducer<T> (state:State<T>, action) {
+function hoverItem<T> (state:State<T>, action):StatePartial<T> {
+  return {
+
+  }
+}
+
+export default function reducer<T> (state:State<T>, action:Action) {
   let nextState
   switch(action.type) {
       case ActionType.DOUBLE_CLICK_ITEM:
@@ -34,25 +47,27 @@ export default function reducer<T> (state:State<T>, action) {
           hoveredItem: null
         }
         if (action.isSelectedItem) {
-          deselectItem
+          nextState = deselectItem(state, action)
         } else {
-          selectItem
+          nextState = selectItem(state, action)
         }
-
+        break;
       case ActionType.CLICK_ITEM:
+        nextState = hoverItem(state, action)
+        break;
 
       case ActionType.HOVER_NEXT_ITEM:
-
+        break;
       case ActionType.HOVER_PREV_ITEM:
-
+        break;
       case ActionType.SELECT_ITEM:
-
+        break;
       case ActionType.DESELECT_ITEM:
-
+        break;
       case REDUX_INIT:
-        break
+        break;
       default:
-        throw new Error(`Action ${action.type} unrecognized`)
+        throw new Error(`Action ${(<any>action).type} unrecognized`)
   }
 
   return _.defaults(nextState, state)
