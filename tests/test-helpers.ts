@@ -7,19 +7,21 @@ export interface DummyType {
     id:string;
 }
 
-export const STATE_DEFAULTS:State<DummyType> = {
-  hoveredItem: null,
-  selectedItems: [],
-  nonSelectedItems: [],
-  allItems: [],
-  titleAttr: 'title',
-  subtitleAtrr: 'subtitle',
-  valueAttr: 'id'
+export function stateDefaults():State<DummyType> {
+    return {
+        hoveredItem: null,
+        selectedItems: [],
+        nonSelectedItems: [],
+        allItems: [],
+        titleAttr: 'title',
+        subtitleAtrr: 'subtitle',
+        valueAttr: 'id'
+    }
 }
 
-export function stateFactory<T> (defaultObj:State<T>) {
+export function stateFactory<T> (defaultGen:()=>State<T>) {
     return (state:StatePartial<T>):State<T> => {
-        return _.defaults(state, defaultObj)
+        return _.defaults(state, defaultGen())
     }
 }
 

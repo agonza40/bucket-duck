@@ -92,9 +92,24 @@ export default function reducer<T> (state:State<T>, action:Action):State<T> {
         break;
 
       case ActionType.SELECT_ITEM:
+        nextState = selectItem(state, action.index)
         break;
 
       case ActionType.DESELECT_ITEM:
+        nextState = deselectItem(state, action.index)
+        break;
+
+      case ActionType.SELECT_HOVER:
+        if (state.hoveredItem === null) {
+          break;
+        }
+        if (state.hoveredItem.isSelected) {
+          nextState = deselectItem(state, state.hoveredItem.index)
+          nextState.hoveredItem = null
+        } else {
+          nextState = selectItem(state, state.hoveredItem.index)
+          nextState.hoveredItem = null
+        }
         break;
 
       case REDUX_INIT:

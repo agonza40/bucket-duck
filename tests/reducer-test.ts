@@ -5,11 +5,12 @@ import * as actions from '../src/actions'
 import {
     stateFactory,
     DummyType,
-    STATE_DEFAULTS,
+    stateDefaults,
     generateDummyItems
 } from './test-helpers'
+import * as _ from 'lodash'
 
-const createState = stateFactory<DummyType>(STATE_DEFAULTS)
+const createState = stateFactory<DummyType>(stateDefaults)
 
 describe('Double click action', function () {
     it('moves a non-selected item to the list of selected items', function () {
@@ -136,5 +137,82 @@ describe('Clear hover action', function () {
         })
         const state = reducer(initialState, actions.clearHover)
         expect(state.hoveredItem).to.be.null
+    })
+})
+
+describe('Select item action', function () {
+    it('moves the item at specified index selected items list', function () {
+        const items = generateDummyItems(1, 3)
+        const initialState = createState({
+            hoveredItem: {index: 0, isSelected: false},
+            nonSelectedItems: items
+        })
+        const state = reducer(initialState, actions.selectItem(1))
+        const expectedSelected = [items[1]]
+        const expectedNotSelected = [items[0], items[2]]
+        expect(state.selectedItems).to.be.eql(expectedSelected)
+        expect(state.nonSelectedItems).to.be.eql(expectedNotSelected)
+    })
+})
+
+describe('Deselect item action', function () {
+    it('moves the hovered item from the selected item list to the non-selected items list', function () {
+        const items = generateDummyItems(1, 3)
+        const initialState = createState({
+            selectedItems: items
+        })
+        const state = reducer(initialState, actions.deselectItem(1))
+        const expectedNotSelected = [items[1]]
+        const expectedSelected = [items[0], items[2]]
+        expect(state.selectedItems).to.be.eql(expectedSelected)
+        expect(state.nonSelectedItems).to.be.eql(expectedNotSelected)
+    })
+})
+
+describe('Select hover action', function () {
+    it('selects the hovered item if it is not selected', function () {
+        const items = generateDummyItems(1, 3)
+        const initialState = createState({
+            hoveredItem: {index: 1, isSelected: false},
+            nonSelectedItems: _.clone(items)
+        })
+        const state = reducer(initialState, actions.selectHover)
+        const expectedSelected = [items[1]]
+        const expectedNotSelected = [items[0], items[2]]
+        expect(state.selectedItems).to.be.eql(expectedSelected)
+        expect(state.nonSelectedItems).to.be.eql(expectedNotSelected)
+    })
+    it('deselects the hovered item if it is selected', function () {
+        const items = generateDummyItems(1, 3)
+        const initialState = createState({
+            hoveredItem: {index: 1, isSelected: true},
+            selectedItems: _.clone(items)
+        })
+        const state = reducer(initialState, actions.selectHover)
+        const expectedNotSelected = [items[1]]
+        const expectedSelected = [items[0], items[2]]
+        expect(state.selectedItems).to.be.eql(expectedSelected)
+        expect(state.nonSelectedItems).to.be.eql(expectedNotSelected)
+    })
+    it('clears the hovered item', function () {
+        const items = generateDummyItems(1, 3)
+        const initialState = createState({
+            hoveredItem: {index: 1, isSelected: true},
+            selectedItems: _.clone(items)
+        })
+        const state = reducer(initialState, actions.selectHover)
+        const expectedNotSelected = [items[1]]
+        const expectedSelected = [items[0], items[2]]
+        expect(state.hoveredItem).to.be.null
+    })
+    it('does nothing if no item is hovered', function () {
+        const items = generateDummyItems(1, 3)
+        const initialState = createState({
+            selectedItems: items
+        })
+        const state = reducer(initialState, actions.selectHover)
+        const expectedNotSelected = [items[1]]
+        const expectedSelected = [items[0], items[2]]
+        expect(state).to.be.eql(initialState)
     })
 })
