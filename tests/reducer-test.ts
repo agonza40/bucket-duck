@@ -1,7 +1,7 @@
-import {describe, it} from 'mocha'
+import {beforeEach, describe, it} from 'mocha'
 import {expect} from 'chai'
 import reducer from '../src/reducer'
-import {doubleClickItem} from '../src/actions'
+import * as actions from '../src/actions'
 import {
     stateFactory,
     DummyType,
@@ -17,7 +17,7 @@ describe('Double click action', function () {
             selectedItems: generateDummyItems(1, 1),
             nonSelectedItems: generateDummyItems(2, 1)
         })
-        expect(reducer(initialState, doubleClickItem(false, 0))).to.be.eql(createState({
+        expect(reducer(initialState, actions.doubleClickItem(false, 0))).to.be.eql(createState({
             nonSelectedItems: [],
             selectedItems:[
                 {title:'Item 1' , subtitle: '', id:'item1'},
@@ -30,12 +30,111 @@ describe('Double click action', function () {
             selectedItems: generateDummyItems(1, 1),
             nonSelectedItems: generateDummyItems(2, 1)
         })
-        expect(reducer(initialState, doubleClickItem(true, 0))).to.be.eql(createState({
+        expect(reducer(initialState, actions.doubleClickItem(true, 0))).to.be.eql(createState({
             nonSelectedItems: [
                 {title:'Item 2' , subtitle: '', id:'item2'},
                 {title:'Item 1' , subtitle: '', id:'item1'}
             ],
             selectedItems:[]
         }))
+    })
+})
+
+describe('Click action', function () {
+    it('sets a hovered item in the non-selected item list', function () {
+        const index = 2
+        const initialState = createState({
+            nonSelectedItems: generateDummyItems(1, 3)
+        })
+
+        const expectedHoveredItem = {index, isSelected: false}
+        const state = reducer(initialState, actions.clickItem(index, false))
+        expect(state.hoveredItem).to.be.eql(expectedHoveredItem)
+    })
+    it('works on the selected item list as well', function () {
+        const index = 2
+        const initialState = createState({
+            selectedItems: generateDummyItems(1, 3)
+        })
+        const expectedHoveredItem =  {index, isSelected: true}
+        const state = reducer(initialState, actions.clickItem(index, true))
+        expect(state.hoveredItem).to.be.eql(expectedHoveredItem)
+    })
+})
+
+describe('Hover next action', function () {
+    describe('selects the next item in', function () {
+        let initialState
+        let items
+        beforeEach(function () {
+            items = generateDummyItems(1, 3)
+            initialState = createState({
+                hoveredItem: {index: 1, isSelected: true}
+            })
+        })
+        it('the non-selected list', function () {
+            initialState.nonSelectedItems = items
+            initialState.hoveredItem.isSelected = false
+            const state = reducer(initialState, actions.hoverNextItem)
+            expect(state.hoveredItem).to.eql({index: 2, isSelected: false})
+        })
+        it('the selected list', function () {
+            initialState.selectedItems = items
+            const state = reducer(initialState, actions.hoverNextItem)
+            expect(state.hoveredItem).to.eql({index: 2, isSelected: true})
+        })
+    })
+    it('does not select past the end of the list', function ()  {
+        const items = generateDummyItems(1, 3)
+        const initialState = createState({
+            hoveredItem: {index: 2, isSelected: true},
+            selectedItems: items
+        })
+        const state = reducer(initialState, actions.hoverNextItem)
+        expect(state.hoveredItem).to.eql({index: 2, isSelected: true})
+    })
+})
+
+describe('Hover previous action', function () {
+    describe('selects the previous item in', function () {
+        let initialState
+        let items
+        beforeEach(function () {
+            items = generateDummyItems(1, 3)
+            initialState = createState({
+                hoveredItem: {index: 2, isSelected: true}
+            })
+        })
+        it('the non-selected list', function () {
+            initialState.nonSelectedItems = items
+            initialState.hoveredItem.isSelected = false
+            const state = reducer(initialState, actions.hoverPrevItem)
+            expect(state.hoveredItem).to.eql({index: 1, isSelected: false})
+        })
+        it('the selected list', function () {
+            initialState.selectedItems = items
+            const state = reducer(initialState, actions.hoverPrevItem)
+            expect(state.hoveredItem).to.eql({index: 1, isSelected: true})
+        })
+    })
+    it('does not select past the beginning of the list', function ()  {
+        const items = generateDummyItems(1, 3)
+        const initialState = createState({
+            hoveredItem: {index: 0, isSelected: true},
+            selectedItems: items
+        })
+        const state = reducer(initialState, actions.hoverPrevItem)
+        expect(state.hoveredItem).to.eql({index: 0, isSelected: true})
+    })
+})
+
+describe('Clear hover action', function () {
+    it('sets the hovered item to null', function () {
+        const initialState = createState({
+            hoveredItem: {index: 0, isSelected: true},
+            selectedItems: generateDummyItems(1, 3)
+        })
+        const state = reducer(initialState, actions.clearHover)
+        expect(state.hoveredItem).to.be.null
     })
 })

@@ -7,7 +7,8 @@ export enum ActionType {
   SELECT_ITEM,
   DESELECT_ITEM,
   HOVER_NEXT_ITEM,
-  HOVER_PREV_ITEM
+  HOVER_PREV_ITEM,
+  CLEAR_HOVER
 }
 
 export namespace ActionType {
@@ -31,23 +32,26 @@ const {
   SELECT_ITEM,
   DESELECT_ITEM,
   HOVER_NEXT_ITEM,
-  HOVER_PREV_ITEM
+  HOVER_PREV_ITEM,
+  CLEAR_HOVER
 } = ActionType
 
 export interface ClickItem {
-  type: ActionType.CLICK_ITEM;
-  index: number;
+  type:ActionType.CLICK_ITEM;
+  isSelectedItem:boolean;
+  index:number;
 }
 
-export function clickItem (index:number):ClickItem {
+export function clickItem (index:number, isSelectedItem:boolean):ClickItem {
   return {
     type: CLICK_ITEM,
+    isSelectedItem,
     index
   }
 }
 
 export interface DoubleClickItem {
-  type: ActionType.DOUBLE_CLICK_ITEM;
+  type:ActionType.DOUBLE_CLICK_ITEM;
   isSelectedItem:boolean;
   index:number;
 }
@@ -84,11 +88,14 @@ export function deselectItem (index:number):DeselectItem {
   }
 }
 
-type HoverNextItem = SimpleAction<ActionType.HOVER_NEXT_ITEM>
-export const selectNextItem:HoverNextItem = simpleAction(HOVER_NEXT_ITEM)
+export type HoverNextItem = SimpleAction<ActionType.HOVER_NEXT_ITEM>
+export const hoverNextItem:HoverNextItem = simpleAction(HOVER_NEXT_ITEM)
 
-type HoverPrevItem = SimpleAction<ActionType.HOVER_PREV_ITEM>
-export const selectPrevItem:HoverPrevItem = simpleAction(HOVER_PREV_ITEM)
+export type HoverPrevItem = SimpleAction<ActionType.HOVER_PREV_ITEM>
+export const hoverPrevItem:HoverPrevItem = simpleAction(HOVER_PREV_ITEM)
+
+export type ClearHover = SimpleAction<ActionType.CLEAR_HOVER>
+export const clearHover:ClearHover = simpleAction(CLEAR_HOVER)
 
 export type Action = ClickItem |
   DoubleClickItem |
@@ -96,4 +103,5 @@ export type Action = ClickItem |
   DeselectItem |
   HoverNextItem |
   HoverPrevItem |
+  ClearHover |
   Init

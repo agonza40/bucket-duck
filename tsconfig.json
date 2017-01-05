@@ -4,6 +4,7 @@
         "module": "commonjs",
         "outDir": "./dist",
         "strictNullChecks": true,
+        "noImplicitAny": true,
         "target": "es5"
     },
     "include": [

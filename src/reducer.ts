@@ -6,16 +6,13 @@ export const INITIAL_STATE = {
   hoveredItem: null,
   selectedItems: [],
   nonSelectedItems: [],
-  allItems: [],
-  titleAttr: '',
-  subtitleAtrr: '',
-  valueAttr: ''
+  allItems: []
 }
 
 
-function selectItem<T> (state:State<T>, action):StatePartial<T> {
+function selectItem<T> (state:State<T>, index:number):StatePartial<T> {
   const {nonSelectedItems, selectedItems} = state
-  const item = nonSelectedItems[action.index]
+  const item = nonSelectedItems[index]
   selectedItems.push(item)
   return {
     selectedItems,
@@ -23,9 +20,9 @@ function selectItem<T> (state:State<T>, action):StatePartial<T> {
   }
 }
 
-function deselectItem<T> (state:State<T>, action):StatePartial<T> {
+function deselectItem<T> (state:State<T>, index:number):StatePartial<T> {
   const {nonSelectedItems, selectedItems} = state
-  const item = selectedItems[action.index]
+  const item = selectedItems[index]
   nonSelectedItems.push(item)
   return {
     selectedItems: _.without(selectedItems, item),
@@ -33,39 +30,76 @@ function deselectItem<T> (state:State<T>, action):StatePartial<T> {
   }
 }
 
-function hoverItem<T> (state:State<T>, action):StatePartial<T> {
+function hoverItem<T> (index:number, isSelected:boolean):StatePartial<T> {
   return {
-
+    hoveredItem: {index, isSelected}
   }
 }
 
-export default function reducer<T> (state:State<T>, action:Action) {
-  let nextState
+function hoverNext<T> (state:State<T>):StatePartial<T> {
+  const {hoveredItem} = state
+  if (hoveredItem === null) {
+    return state
+  }
+  const {index, isSelected} = hoveredItem
+  const items = isSelected ? state.selectedItems : state.nonSelectedItems
+  if (index > -1 && index < items.length - 1) {
+    return hoverItem<T>(index + 1, isSelected)
+  }
+  return state
+}
+
+function hoverPrev<T> (state:State<T>):StatePartial<T> {
+  const {hoveredItem} = state
+  if (hoveredItem === null) {
+    return state
+  }
+  const {index, isSelected} = hoveredItem
+  if (index > 0) {
+    return hoverItem<T>(index - 1, isSelected)
+  }
+  return state
+}
+
+export default function reducer<T> (state:State<T>, action:Action):State<T> {
+  let nextState:StatePartial<T> | undefined
   switch(action.type) {
       case ActionType.DOUBLE_CLICK_ITEM:
         nextState = {
           hoveredItem: null
         }
         if (action.isSelectedItem) {
-          nextState = deselectItem(state, action)
+          nextState = deselectItem(state, action.index)
         } else {
-          nextState = selectItem(state, action)
+          nextState = selectItem(state, action.index)
         }
         break;
+
       case ActionType.CLICK_ITEM:
-        nextState = hoverItem(state, action)
+        nextState = hoverItem<T>(action.index, action.isSelectedItem)
         break;
 
       case ActionType.HOVER_NEXT_ITEM:
+        nextState = hoverNext(state)
         break;
+
       case ActionType.HOVER_PREV_ITEM:
+        nextState = hoverPrev(state)
         break;
+
+      case ActionType.CLEAR_HOVER:
+        nextState = {hoveredItem: null}
+        break;
+
       case ActionType.SELECT_ITEM:
         break;
+
       case ActionType.DESELECT_ITEM:
         break;
+
       case REDUX_INIT:
         break;
+
       default:
         throw new Error(`Action ${(<any>action).type} unrecognized`)
   }
