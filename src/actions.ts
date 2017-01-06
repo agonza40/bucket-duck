@@ -1,5 +1,5 @@
 export const REDUX_INIT = '@@redux/init'
-export type Init = {type: '@@redux/init'}
+export type Init = {type:'@@redux/init'}
 
 export enum ActionType {
   CLICK_ITEM,
@@ -39,9 +39,9 @@ const {
 } = ActionType
 
 export interface ClickItem {
-  type:ActionType.CLICK_ITEM;
-  isSelectedItem:boolean;
-  index:number;
+  type:ActionType.CLICK_ITEM
+  isSelectedItem:boolean
+  index:number
 }
 
 export function clickItem (index:number, isSelectedItem:boolean):ClickItem {
@@ -53,9 +53,9 @@ export function clickItem (index:number, isSelectedItem:boolean):ClickItem {
 }
 
 export interface DoubleClickItem {
-  type:ActionType.DOUBLE_CLICK_ITEM;
-  isSelectedItem:boolean;
-  index:number;
+  type:ActionType.DOUBLE_CLICK_ITEM
+  isSelectedItem:boolean
+  index:number
 }
 
 export function doubleClickItem (isSelectedItem:boolean, index:number):DoubleClickItem {
@@ -67,8 +67,8 @@ export function doubleClickItem (isSelectedItem:boolean, index:number):DoubleCli
 }
 
 export interface SelectItem {
-  type:ActionType.SELECT_ITEM;
-  index:number;
+  type:ActionType.SELECT_ITEM
+  index:number
 }
 
 export function selectItem (index:number):SelectItem {
@@ -79,8 +79,8 @@ export function selectItem (index:number):SelectItem {
 }
 
 export interface DeselectItem {
-  type:ActionType.DESELECT_ITEM;
-  index:number;
+  type:ActionType.DESELECT_ITEM
+  index:number
 }
 
 export function deselectItem (index:number):DeselectItem {

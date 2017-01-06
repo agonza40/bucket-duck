@@ -1,11 +1,12 @@
 {
   "name": "bucket-duck",
   "version": "0.0.1",
-  "description": "A redux module containing a reducer and actions for a bucket widget. ",
+  "description": "A redux module containing a reducer and actions for a bucket widget.",
   "main": "dist/bucket-duck.js",
   "scripts": {
     "build": "./node_modules/.bin/tsc",
     "build-test": "./node_modules/.bin/tsc -p test-tsconfig.json",
+    "lint": "./node_modules/.bin/tslint src/**/*.ts",
     "test": "./node_modules/.bin/mocha tests/**/*.js"
   },
   "author": "Andres Gonzalez [https://github.com/agonza40]",
@@ -14,6 +15,8 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "mocha": "^3.2.0",
+    "tslint": "^4.3.0",
+    "tslint-config-standard": "^2.0.0",
     "typescript": "^2.1.4"
   },
   "dependencies": {

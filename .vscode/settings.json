@@ -9,5 +9,7 @@
         "src/**/*.js.map": true,
         "test/**/*.js": true,
         "test/**/*.js.map": true
-    }
+    },
+    "editor.tabSize": 2,
+    "tslint.ignoreDefinitionFiles": false
 }

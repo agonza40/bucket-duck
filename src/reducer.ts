@@ -9,7 +9,6 @@ export const INITIAL_STATE = {
   allItems: []
 }
 
-
 function selectItem<T> (state:State<T>, index:number):StatePartial<T> {
   const {nonSelectedItems, selectedItems} = state
   const item = nonSelectedItems[index]
@@ -63,7 +62,7 @@ function hoverPrev<T> (state:State<T>):StatePartial<T> {
 
 export default function reducer<T> (state:State<T>, action:Action):State<T> {
   let nextState:StatePartial<T> | undefined
-  switch(action.type) {
+  switch (action.type) {
       case ActionType.DOUBLE_CLICK_ITEM:
         nextState = {
           hoveredItem: null
@@ -73,35 +72,35 @@ export default function reducer<T> (state:State<T>, action:Action):State<T> {
         } else {
           nextState = selectItem(state, action.index)
         }
-        break;
+        break
 
       case ActionType.CLICK_ITEM:
         nextState = hoverItem<T>(action.index, action.isSelectedItem)
-        break;
+        break
 
       case ActionType.HOVER_NEXT_ITEM:
         nextState = hoverNext(state)
-        break;
+        break
 
       case ActionType.HOVER_PREV_ITEM:
         nextState = hoverPrev(state)
-        break;
+        break
 
       case ActionType.CLEAR_HOVER:
         nextState = {hoveredItem: null}
-        break;
+        break
 
       case ActionType.SELECT_ITEM:
         nextState = selectItem(state, action.index)
-        break;
+        break
 
       case ActionType.DESELECT_ITEM:
         nextState = deselectItem(state, action.index)
-        break;
+        break
 
       case ActionType.SELECT_HOVER:
         if (state.hoveredItem === null) {
-          break;
+          break
         }
         if (state.hoveredItem.isSelected) {
           nextState = deselectItem(state, state.hoveredItem.index)
@@ -110,13 +109,13 @@ export default function reducer<T> (state:State<T>, action:Action):State<T> {
           nextState = selectItem(state, state.hoveredItem.index)
           nextState.hoveredItem = null
         }
-        break;
+        break
 
       case REDUX_INIT:
-        break;
+        break
 
       default:
-        throw new Error(`Action ${(<any>action).type} unrecognized`)
+        throw new Error(`Action ${(action as Action).type} unrecognized`)
   }
 
   return _.defaults(nextState, state)
