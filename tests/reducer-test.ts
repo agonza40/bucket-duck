@@ -1,5 +1,5 @@
-import {beforeEach, describe, it} from 'mocha'
 import {expect} from 'chai'
+import {State, StatePartial} from '../src/types'
 import reducer from '../src/reducer'
 import * as actions from '../src/actions'
 import {
@@ -57,7 +57,7 @@ describe('Click action', function () {
         const initialState = createState({
             selectedItems: generateDummyItems(1, 3)
         })
-        const expectedHoveredItem =  {index, isSelected: true}
+        const expectedHoveredItem = {index, isSelected: true}
         const state = reducer(initialState, actions.clickItem(index, true))
         expect(state.hoveredItem).to.be.eql(expectedHoveredItem)
     })
@@ -65,8 +65,8 @@ describe('Click action', function () {
 
 describe('Hover next action', function () {
     describe('selects the next item in', function () {
-        let initialState
-        let items
+        let initialState:State<DummyType>
+        let items:DummyType[]
         beforeEach(function () {
             items = generateDummyItems(1, 3)
             initialState = createState({
@@ -75,31 +75,33 @@ describe('Hover next action', function () {
         })
         it('the non-selected list', function () {
             initialState.nonSelectedItems = items
-            initialState.hoveredItem.isSelected = false
-            const state = reducer(initialState, actions.hoverNextItem)
+            if (initialState.hoveredItem !== null) {
+                initialState.hoveredItem.isSelected = false
+            }
+            const state = reducer(initialState, actions.hoverNextItem())
             expect(state.hoveredItem).to.eql({index: 2, isSelected: false})
         })
         it('the selected list', function () {
             initialState.selectedItems = items
-            const state = reducer(initialState, actions.hoverNextItem)
+            const state = reducer(initialState, actions.hoverNextItem())
             expect(state.hoveredItem).to.eql({index: 2, isSelected: true})
         })
     })
-    it('does not select past the end of the list', function ()  {
+    it('does not select past the end of the list', function () {
         const items = generateDummyItems(1, 3)
         const initialState = createState({
             hoveredItem: {index: 2, isSelected: true},
             selectedItems: items
         })
-        const state = reducer(initialState, actions.hoverNextItem)
+        const state = reducer(initialState, actions.hoverNextItem())
         expect(state.hoveredItem).to.eql({index: 2, isSelected: true})
     })
 })
 
 describe('Hover previous action', function () {
     describe('selects the previous item in', function () {
-        let initialState
-        let items
+        let initialState:State<DummyType>
+        let items:DummyType[]
         beforeEach(function () {
             items = generateDummyItems(1, 3)
             initialState = createState({
@@ -108,13 +110,15 @@ describe('Hover previous action', function () {
         })
         it('the non-selected list', function () {
             initialState.nonSelectedItems = items
-            initialState.hoveredItem.isSelected = false
-            const state = reducer(initialState, actions.hoverPrevItem)
+            if (initialState.hoveredItem !== null) {
+                initialState.hoveredItem.isSelected = false
+            }
+            const state = reducer(initialState, actions.hoverPrevItem())
             expect(state.hoveredItem).to.eql({index: 1, isSelected: false})
         })
         it('the selected list', function () {
             initialState.selectedItems = items
-            const state = reducer(initialState, actions.hoverPrevItem)
+            const state = reducer(initialState, actions.hoverPrevItem())
             expect(state.hoveredItem).to.eql({index: 1, isSelected: true})
         })
     })
@@ -124,7 +128,7 @@ describe('Hover previous action', function () {
             hoveredItem: {index: 0, isSelected: true},
             selectedItems: items
         })
-        const state = reducer(initialState, actions.hoverPrevItem)
+        const state = reducer(initialState, actions.hoverPrevItem())
         expect(state.hoveredItem).to.eql({index: 0, isSelected: true})
     })
 })
@@ -135,7 +139,7 @@ describe('Clear hover action', function () {
             hoveredItem: {index: 0, isSelected: true},
             selectedItems: generateDummyItems(1, 3)
         })
-        const state = reducer(initialState, actions.clearHover)
+        const state = reducer(initialState, actions.clearHover())
         expect(state.hoveredItem).to.be.null
     })
 })
@@ -176,7 +180,7 @@ describe('Select hover action', function () {
             hoveredItem: {index: 1, isSelected: false},
             nonSelectedItems: _.clone(items)
         })
-        const state = reducer(initialState, actions.selectHover)
+        const state = reducer(initialState, actions.selectHover())
         const expectedSelected = [items[1]]
         const expectedNotSelected = [items[0], items[2]]
         expect(state.selectedItems).to.be.eql(expectedSelected)
@@ -188,7 +192,7 @@ describe('Select hover action', function () {
             hoveredItem: {index: 1, isSelected: true},
             selectedItems: _.clone(items)
         })
-        const state = reducer(initialState, actions.selectHover)
+        const state = reducer(initialState, actions.selectHover())
         const expectedNotSelected = [items[1]]
         const expectedSelected = [items[0], items[2]]
         expect(state.selectedItems).to.be.eql(expectedSelected)
@@ -200,7 +204,7 @@ describe('Select hover action', function () {
             hoveredItem: {index: 1, isSelected: true},
             selectedItems: _.clone(items)
         })
-        const state = reducer(initialState, actions.selectHover)
+        const state = reducer(initialState, actions.selectHover())
         const expectedNotSelected = [items[1]]
         const expectedSelected = [items[0], items[2]]
         expect(state.hoveredItem).to.be.null
@@ -210,7 +214,7 @@ describe('Select hover action', function () {
         const initialState = createState({
             selectedItems: items
         })
-        const state = reducer(initialState, actions.selectHover)
+        const state = reducer(initialState, actions.selectHover())
         const expectedNotSelected = [items[1]]
         const expectedSelected = [items[0], items[2]]
         expect(state).to.be.eql(initialState)

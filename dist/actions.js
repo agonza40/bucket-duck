@@ -17,10 +17,15 @@ var ActionType;
     }
 })(ActionType = exports.ActionType || (exports.ActionType = {}));
 function simpleAction(action) {
-    return {
+    var actionObj = {
         get type() {
             return action;
         }
+    };
+    return function () {
+        return {
+            type: action
+        };
     };
 }
 exports.simpleAction = simpleAction;

@@ -17,7 +17,7 @@ export declare namespace ActionType {
 export declare type SimpleAction<T extends ActionType> = {
     type: T;
 };
-export declare function simpleAction<T extends ActionType>(action: T): SimpleAction<T>;
+export declare function simpleAction<T extends ActionType>(action: T): () => SimpleAction<T>;
 export interface ClickItem {
     type: ActionType.CLICK_ITEM;
     isSelectedItem: boolean;
@@ -41,11 +41,11 @@ export interface DeselectItem {
 }
 export declare function deselectItem(index: number): DeselectItem;
 export declare type HoverNextItem = SimpleAction<ActionType.HOVER_NEXT_ITEM>;
-export declare const hoverNextItem: HoverNextItem;
+export declare const hoverNextItem: () => HoverNextItem;
 export declare type HoverPrevItem = SimpleAction<ActionType.HOVER_PREV_ITEM>;
-export declare const hoverPrevItem: HoverPrevItem;
+export declare const hoverPrevItem: () => HoverPrevItem;
 export declare type ClearHover = SimpleAction<ActionType.CLEAR_HOVER>;
-export declare const clearHover: ClearHover;
+export declare const clearHover: () => ClearHover;
 export declare type SelectHover = SimpleAction<ActionType.SELECT_HOVER>;
-export declare const selectHover: SelectHover;
+export declare const selectHover: () => SelectHover;
 export declare type Action = ClickItem | DoubleClickItem | SelectItem | DeselectItem | HoverNextItem | HoverPrevItem | ClearHover | SelectHover | Init;

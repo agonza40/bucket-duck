@@ -19,10 +19,15 @@ export namespace ActionType {
 }
 
 export type SimpleAction <T extends ActionType> = {type:T}
-export function simpleAction <T extends ActionType>(action:T):SimpleAction<T> {
-  return {
+export function simpleAction <T extends ActionType>(action:T):() => SimpleAction<T> {
+  const actionObj = {
     get type ():T {
       return action
+    }
+  }
+  return function () {
+    return {
+      type: action
     }
   }
 }
@@ -91,16 +96,16 @@ export function deselectItem (index:number):DeselectItem {
 }
 
 export type HoverNextItem = SimpleAction<ActionType.HOVER_NEXT_ITEM>
-export const hoverNextItem:HoverNextItem = simpleAction(HOVER_NEXT_ITEM)
+export const hoverNextItem:() => HoverNextItem = simpleAction(HOVER_NEXT_ITEM)
 
 export type HoverPrevItem = SimpleAction<ActionType.HOVER_PREV_ITEM>
-export const hoverPrevItem:HoverPrevItem = simpleAction(HOVER_PREV_ITEM)
+export const hoverPrevItem:() => HoverPrevItem = simpleAction(HOVER_PREV_ITEM)
 
 export type ClearHover = SimpleAction<ActionType.CLEAR_HOVER>
-export const clearHover:ClearHover = simpleAction(CLEAR_HOVER)
+export const clearHover:() => ClearHover = simpleAction(CLEAR_HOVER)
 
 export type SelectHover = SimpleAction<ActionType.SELECT_HOVER>
-export const selectHover:SelectHover = simpleAction(SELECT_HOVER)
+export const selectHover:() => SelectHover = simpleAction(SELECT_HOVER)
 
 export type Action =
   ClickItem |

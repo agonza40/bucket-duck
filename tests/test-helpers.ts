@@ -19,7 +19,7 @@ export function stateDefaults():State<DummyType> {
     }
 }
 
-export function stateFactory<T> (defaultGen:()=>State<T>) {
+export function stateFactory<T> (defaultGen:() => State<T>):(state:StatePartial<T>) => State<T> {
     return (state:StatePartial<T>):State<T> => {
         return _.defaults(state, defaultGen())
     }
