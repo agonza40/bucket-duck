@@ -3,7 +3,7 @@ Based on this [Modular Reducer Proposal](https://github.com/erikras/ducks-modula
 
 ## Actions
 | Action Name | Intended usage |
-| - | - |
+| ----------- | -------------- |
 | CLICK_ITEM | A user single clicks an item |
 | DOUBLE_CLICK_ITEM | A user double clicks an item |
 | SELECT_ITEM | An item is selected by its index |
