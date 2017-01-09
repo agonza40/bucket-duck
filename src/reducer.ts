@@ -2,7 +2,7 @@ import * as _ from 'lodash'
 import {ActionType, REDUX_INIT, Action} from './actions'
 import {State, StatePartial} from './types'
 
-export const INITIAL_STATE = {
+export const INITIAL_STATE:State<any> = {
   hoveredItem: null,
   selectedItems: [],
   nonSelectedItems: [],

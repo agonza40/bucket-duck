@@ -2,7 +2,7 @@
     "compileOnSave": true,
     "compilerOptions": {
         "declaration": true,
-        "module": "commonjs",
+        "module": "umd",
         "noImplicitAny": true,
         "outDir": "./dist",
         "strictNullChecks": true,
