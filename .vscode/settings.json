@@ -11,5 +11,6 @@
         "test/**/*.js.map": true
     },
     "editor.tabSize": 2,
-    "tslint.ignoreDefinitionFiles": false
+    "tslint.ignoreDefinitionFiles": false,
+    "tslint.exclude": "dist/**/*.ts"
 }
