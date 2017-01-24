@@ -2,7 +2,8 @@
   "name": "bucket-duck",
   "version": "0.0.1",
   "description": "A redux module containing a reducer and actions for a bucket widget.",
-  "main": "dist/bucket-duck.js",
+  "main": "./dist/bucket-duck.js",
+  "types": "./dist/bucket-duck.d.ts",
   "scripts": {
     "build": "./node_modules/.bin/tsc",
     "build-test": "./node_modules/.bin/tsc -p test-tsconfig.json",
