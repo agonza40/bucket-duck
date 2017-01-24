@@ -1,6 +1,6 @@
 {
   "name": "bucket-duck",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A redux module containing a reducer and actions for a bucket widget.",
   "main": "./dist/bucket-duck.js",
   "types": "./dist/bucket-duck.d.ts",

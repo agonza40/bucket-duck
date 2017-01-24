@@ -7,22 +7,19 @@
     }
 })(["require", "exports"], function (require, exports) {
     "use strict";
-    exports.REDUX_INIT = '@@redux/init';
+    exports.REDUX_INIT = '@@redux/INIT';
     var ActionType;
     (function (ActionType) {
-        ActionType[ActionType["CLICK_ITEM"] = 0] = "CLICK_ITEM";
-        ActionType[ActionType["DOUBLE_CLICK_ITEM"] = 1] = "DOUBLE_CLICK_ITEM";
-        ActionType[ActionType["SELECT_ITEM"] = 2] = "SELECT_ITEM";
-        ActionType[ActionType["DESELECT_ITEM"] = 3] = "DESELECT_ITEM";
-        ActionType[ActionType["HOVER_NEXT_ITEM"] = 4] = "HOVER_NEXT_ITEM";
-        ActionType[ActionType["HOVER_PREV_ITEM"] = 5] = "HOVER_PREV_ITEM";
-        ActionType[ActionType["CLEAR_HOVER"] = 6] = "CLEAR_HOVER";
-        ActionType[ActionType["SELECT_HOVER"] = 7] = "SELECT_HOVER";
-    })(ActionType = exports.ActionType || (exports.ActionType = {}));
-    (function (ActionType) {
-        function asString(type) {
-            return ActionType[type];
-        }
+        ActionType.SELECT_ITEM = 'frost-buckets/SELECT_ITEM';
+        ActionType.DESELECT_ITEM = 'frost-buckets/DESELECT_ITEM';
+        ActionType.HOVER_SELECTED = 'frost-buckets/HOVER_SELECTED';
+        ActionType.HOVER_NON_SELECTED = 'frost-buckets/HOVER_NON_SELECTED';
+        ActionType.HOVER_NEXT_ITEM = 'frost-buckets/HOVER_NEXT_ITEM';
+        ActionType.HOVER_PREV_ITEM = 'frost-buckets/HOVER_PREV_ITEM';
+        ActionType.CLEAR_HOVER = 'frost-buckets/CLEAR_HOVER';
+        ActionType.SELECT_HOVER = 'frost-buckets/SELECT_HOVER';
+        ActionType.RECEIVED_STATE = 'frost-buckets/RECEIVED_STATE';
+        ActionType.REORDER_ITEMS = 'frost-buckets/REORDER_ITEMS';
     })(ActionType = exports.ActionType || (exports.ActionType = {}));
     function simpleAction(action) {
         var actionObj = {
@@ -31,27 +28,23 @@
             }
         };
         return function () {
-            return {
-                type: action
-            };
+            return actionObj;
         };
     }
     exports.simpleAction = simpleAction;
-    var CLICK_ITEM = ActionType.CLICK_ITEM, DOUBLE_CLICK_ITEM = ActionType.DOUBLE_CLICK_ITEM, SELECT_ITEM = ActionType.SELECT_ITEM, DESELECT_ITEM = ActionType.DESELECT_ITEM, HOVER_NEXT_ITEM = ActionType.HOVER_NEXT_ITEM, HOVER_PREV_ITEM = ActionType.HOVER_PREV_ITEM, CLEAR_HOVER = ActionType.CLEAR_HOVER, SELECT_HOVER = ActionType.SELECT_HOVER;
+    var SELECT_ITEM = ActionType.SELECT_ITEM, DESELECT_ITEM = ActionType.DESELECT_ITEM, HOVER_NEXT_ITEM = ActionType.HOVER_NEXT_ITEM, HOVER_PREV_ITEM = ActionType.HOVER_PREV_ITEM, CLEAR_HOVER = ActionType.CLEAR_HOVER, SELECT_HOVER = ActionType.SELECT_HOVER;
     function clickItem(index, isSelectedItem) {
-        return {
-            type: CLICK_ITEM,
-            isSelectedItem: isSelectedItem,
-            index: index
-        };
+        if (isSelectedItem) {
+            return hoverSelected(index);
+        }
+        return hoverNonSelected(index);
     }
     exports.clickItem = clickItem;
     function doubleClickItem(isSelectedItem, index) {
-        return {
-            type: DOUBLE_CLICK_ITEM,
-            isSelectedItem: isSelectedItem,
-            index: index
-        };
+        if (isSelectedItem) {
+            return deselectItem(index);
+        }
+        return selectItem(index);
     }
     exports.doubleClickItem = doubleClickItem;
     function selectItem(index) {
@@ -68,6 +61,35 @@
         };
     }
     exports.deselectItem = deselectItem;
+    function hoverSelected(index) {
+        return {
+            type: ActionType.HOVER_SELECTED,
+            index: index
+        };
+    }
+    exports.hoverSelected = hoverSelected;
+    function hoverNonSelected(index) {
+        return {
+            type: ActionType.HOVER_NON_SELECTED,
+            index: index
+        };
+    }
+    exports.hoverNonSelected = hoverNonSelected;
+    function receivedState(state) {
+        return {
+            type: ActionType.RECEIVED_STATE,
+            state: state
+        };
+    }
+    exports.receivedState = receivedState;
+    function reorderItems(newOrder, item) {
+        return {
+            type: ActionType.REORDER_ITEMS,
+            newOrder: newOrder,
+            item: item
+        };
+    }
+    exports.reorderItems = reorderItems;
     exports.hoverNextItem = simpleAction(HOVER_NEXT_ITEM);
     exports.hoverPrevItem = simpleAction(HOVER_PREV_ITEM);
     exports.clearHover = simpleAction(CLEAR_HOVER);

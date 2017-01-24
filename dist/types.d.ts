@@ -9,6 +9,7 @@ export interface State<T> {
     titleAttr?: keyof T;
     subtitleAtrr?: keyof T;
     valueAttr?: keyof T;
+    selectedChanged: boolean;
 }
 export declare type StatePartial<T> = {
     [K in keyof State<T>]?: State<T>[K];

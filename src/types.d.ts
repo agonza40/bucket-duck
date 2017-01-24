@@ -5,8 +5,9 @@ export interface State<T> {
   nonSelectedItems:T[]
   allItems:T[]
   titleAttr?:keyof T
-  subtitleAtrr?:keyof T
+  subtitleAttr?:keyof T
   valueAttr?:keyof T
+  selectedChanged:boolean
 }
 
 export type StatePartial<T> = {

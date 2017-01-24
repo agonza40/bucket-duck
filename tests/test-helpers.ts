@@ -14,8 +14,9 @@ export function stateDefaults():State<DummyType> {
         nonSelectedItems: [],
         allItems: [],
         titleAttr: 'title',
-        subtitleAtrr: 'subtitle',
-        valueAttr: 'id'
+        subtitleAttr: 'subtitle',
+        valueAttr: 'id',
+        selectedChanged: false
     }
 }
 

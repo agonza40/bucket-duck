@@ -220,3 +220,86 @@ describe('Select hover action', function () {
         expect(state).to.be.eql(initialState)
     })
 })
+describe('received state action', function () {
+  interface OtherDummy extends DummyType {
+    'not-label'?:string
+    'not-subtitle'?:string
+    'not-id'?:string
+  }
+  let initialState:State<DummyType>
+  beforeEach(function () {
+    initialState = createState({
+      nonSelectedItems: generateDummyItems(1, 3)
+    })
+  })
+  it('updates selected state properties', function () {
+    const newStateProps:StatePartial<OtherDummy> = {
+      hoveredItem: {index: 0, isSelected: false},
+      nonSelectedItems: generateDummyItems(3, 3),
+      selectedItems: generateDummyItems(1, 2),
+      titleAttr: 'not-label',
+      subtitleAttr: 'not-subtitle',
+      valueAttr: 'not-id',
+      selectedChanged: true
+    }
+    const state = reducer(initialState, actions.receivedState(newStateProps))
+    expect(state.hoveredItem).to.be.eql(newStateProps.hoveredItem)
+    expect(state.nonSelectedItems).to.be.eql(newStateProps.nonSelectedItems)
+    expect(state.selectedItems).to.be.eql(newStateProps.selectedItems)
+    expect(state.titleAttr).to.be.eql(newStateProps.titleAttr)
+    expect(state.subtitleAttr).to.be.eql(newStateProps.subtitleAttr)
+    expect(state.valueAttr).to.be.eql(newStateProps.valueAttr)
+  })
+  it('does not indicate change in selected items', function () {
+    const newStateProps:StatePartial<OtherDummy> = {
+      hoveredItem: {index: 0, isSelected: false},
+      nonSelectedItems: generateDummyItems(3, 3),
+      selectedItems: generateDummyItems(1, 2),
+      titleAttr: 'not-label',
+      subtitleAttr: 'not-subtitle',
+      valueAttr: 'not-id'
+    }
+    const state = reducer(initialState, actions.receivedState(newStateProps))
+    expect(state.selectedChanged).to.be.equal(false)
+  })
+  it('unsets the hovered item if the one provided is out of range', function () {
+    const newStateProps:StatePartial<OtherDummy> = {
+      hoveredItem: {index: 10, isSelected: false}
+    }
+    const state = reducer(initialState, actions.receivedState(newStateProps))
+    expect(state.hoveredItem).to.be.equal(null)
+  })
+})
+
+describe('reorder items action', function () {
+  let initialState
+  let selectedItems
+  let newOrder:DummyType[]
+  let movedItem
+  let state:State<DummyType>
+  beforeEach(function () {
+    selectedItems = generateDummyItems(1, 4)
+    initialState = createState({
+      selectedItems
+    })
+    // reorder 3rd and 2nd items
+    newOrder = [
+      selectedItems[0],
+      selectedItems[2],
+      selectedItems[1],
+      selectedItems[3]
+    ]
+    movedItem = selectedItems[2]
+    state = reducer(initialState, actions.reorderItems(newOrder, movedItem))
+  })
+
+  it('reorders the selected items', function () {
+    expect(state.selectedItems).to.be.eql(newOrder)
+  })
+  it('sets the hovered item to the dragged item', function () {
+    expect(state.hoveredItem).to.be.eql({
+      index: 1,
+      isSelected: true
+    })
+  })
+})

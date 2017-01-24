@@ -2,11 +2,17 @@ import * as _ from 'lodash'
 import {ActionType, REDUX_INIT, Action} from './actions'
 import {State, StatePartial} from './types'
 
+interface HoverState {
+  index:number
+  isSelected:boolean
+}
+
 export const INITIAL_STATE:State<any> = {
   hoveredItem: null,
   selectedItems: [],
   nonSelectedItems: [],
-  allItems: []
+  allItems: [],
+  selectedChanged: false
 }
 
 function selectItem<T> (state:State<T>, index:number):StatePartial<T> {
@@ -60,30 +66,43 @@ function hoverPrev<T> (state:State<T>):StatePartial<T> {
   return state
 }
 
-export default function reducer<T> (state:State<T>, action:Action):State<T> {
+function hoveredOutOfBounds<T> (hoveredItem:HoverState, selectedItems:T[], nonSelectedItems:T[]) {
+  return hoveredItem.index < 0 ||
+      (hoveredItem.isSelected && hoveredItem.index >= selectedItems.length) ||
+      hoveredItem.index >= nonSelectedItems.length
+}
+
+function receiveState<T> (state:State<T>, newStateProps:StatePartial<T>) {
+  const nonSelectedItems = newStateProps.nonSelectedItems || state.nonSelectedItems
+  const selectedItems = newStateProps.selectedItems || state.nonSelectedItems
+  let hoveredItem = newStateProps.hoveredItem
+  if (hoveredItem !== null && hoveredItem !== undefined) {
+    if (hoveredOutOfBounds(hoveredItem, selectedItems, nonSelectedItems)) {
+      hoveredItem = null
+    }
+  }
+  return _.assign(newStateProps, {
+    hoveredItem,
+    selectedChanged: false
+  })
+}
+export default function reducer<T> (state:State<T>, action:Action<T>):State<T> {
   let nextState:StatePartial<T> | undefined
   switch (action.type) {
-      case ActionType.DOUBLE_CLICK_ITEM:
-        nextState = {
-          hoveredItem: null
-        }
-        if (action.isSelectedItem) {
-          nextState = deselectItem(state, action.index)
-        } else {
-          nextState = selectItem(state, action.index)
-        }
-        break
-
-      case ActionType.CLICK_ITEM:
-        nextState = hoverItem<T>(action.index, action.isSelectedItem)
-        break
-
       case ActionType.HOVER_NEXT_ITEM:
         nextState = hoverNext(state)
         break
 
       case ActionType.HOVER_PREV_ITEM:
         nextState = hoverPrev(state)
+        break
+
+      case ActionType.HOVER_SELECTED:
+        nextState = hoverItem<T>(action.index, true)
+        break
+
+      case ActionType.HOVER_NON_SELECTED:
+        nextState = hoverItem<T>(action.index, false)
         break
 
       case ActionType.CLEAR_HOVER:
@@ -111,11 +130,25 @@ export default function reducer<T> (state:State<T>, action:Action):State<T> {
         }
         break
 
+      case ActionType.RECEIVED_STATE:
+        nextState = receiveState(state, action.state)
+        break
+
+      case ActionType.REORDER_ITEMS:
+        nextState ={
+          hoveredItem: {
+            index: _.findIndex(action.newOrder, action.item),
+            isSelected: true
+          },
+          selectedItems: action.newOrder,
+          selectedChanged: true
+        }
+        break
       case REDUX_INIT:
         break
 
       default:
-        throw new Error(`Action ${(action as Action).type} unrecognized`)
+        throw new Error(`Action ${(action as Action<T>).type} unrecognized`)
   }
 
   return _.defaults(nextState, state)

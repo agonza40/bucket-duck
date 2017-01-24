@@ -13,7 +13,8 @@
         hoveredItem: null,
         selectedItems: [],
         nonSelectedItems: [],
-        allItems: []
+        allItems: [],
+        selectedChanged: false
     };
     function selectItem(state, index) {
         var nonSelectedItems = state.nonSelectedItems, selectedItems = state.selectedItems;
@@ -61,28 +62,39 @@
         }
         return state;
     }
+    function hoveredOutOfBounds(hoveredItem, selectedItems, nonSelectedItems) {
+        return hoveredItem.index < 0 ||
+            (hoveredItem.isSelected && hoveredItem.index >= selectedItems.length) ||
+            hoveredItem.index >= nonSelectedItems.length;
+    }
+    function receiveState(state, newStateProps) {
+        var nonSelectedItems = newStateProps.nonSelectedItems || state.nonSelectedItems;
+        var selectedItems = newStateProps.selectedItems || state.nonSelectedItems;
+        var hoveredItem = newStateProps.hoveredItem;
+        if (hoveredItem !== null && hoveredItem !== undefined) {
+            if (hoveredOutOfBounds(hoveredItem, selectedItems, nonSelectedItems)) {
+                hoveredItem = null;
+            }
+        }
+        return _.assign(newStateProps, {
+            hoveredItem: hoveredItem,
+            selectedChanged: false
+        });
+    }
     function reducer(state, action) {
         var nextState;
         switch (action.type) {
-            case actions_1.ActionType.DOUBLE_CLICK_ITEM:
-                nextState = {
-                    hoveredItem: null
-                };
-                if (action.isSelectedItem) {
-                    nextState = deselectItem(state, action.index);
-                }
-                else {
-                    nextState = selectItem(state, action.index);
-                }
-                break;
-            case actions_1.ActionType.CLICK_ITEM:
-                nextState = hoverItem(action.index, action.isSelectedItem);
-                break;
             case actions_1.ActionType.HOVER_NEXT_ITEM:
                 nextState = hoverNext(state);
                 break;
             case actions_1.ActionType.HOVER_PREV_ITEM:
                 nextState = hoverPrev(state);
+                break;
+            case actions_1.ActionType.HOVER_SELECTED:
+                nextState = hoverItem(action.index, true);
+                break;
+            case actions_1.ActionType.HOVER_NON_SELECTED:
+                nextState = hoverItem(action.index, false);
                 break;
             case actions_1.ActionType.CLEAR_HOVER:
                 nextState = { hoveredItem: null };
@@ -105,6 +117,19 @@
                     nextState = selectItem(state, state.hoveredItem.index);
                     nextState.hoveredItem = null;
                 }
+                break;
+            case actions_1.ActionType.RECEIVED_STATE:
+                nextState = receiveState(state, action.state);
+                break;
+            case actions_1.ActionType.REORDER_ITEMS:
+                nextState = {
+                    hoveredItem: {
+                        index: _.findIndex(action.newOrder, action.item),
+                        isSelected: true
+                    },
+                    selectedItems: action.newOrder,
+                    selectedChanged: true
+                };
                 break;
             case actions_1.REDUX_INIT:
                 break;
