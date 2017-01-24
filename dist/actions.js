@@ -32,7 +32,6 @@
         };
     }
     exports.simpleAction = simpleAction;
-    var SELECT_ITEM = ActionType.SELECT_ITEM, DESELECT_ITEM = ActionType.DESELECT_ITEM, HOVER_NEXT_ITEM = ActionType.HOVER_NEXT_ITEM, HOVER_PREV_ITEM = ActionType.HOVER_PREV_ITEM, CLEAR_HOVER = ActionType.CLEAR_HOVER, SELECT_HOVER = ActionType.SELECT_HOVER;
     function clickItem(index, isSelectedItem) {
         if (isSelectedItem) {
             return hoverSelected(index);
@@ -49,14 +48,14 @@
     exports.doubleClickItem = doubleClickItem;
     function selectItem(index) {
         return {
-            type: SELECT_ITEM,
+            type: ActionType.SELECT_ITEM,
             index: index
         };
     }
     exports.selectItem = selectItem;
     function deselectItem(index) {
         return {
-            type: DESELECT_ITEM,
+            type: ActionType.DESELECT_ITEM,
             index: index
         };
     }
@@ -90,8 +89,8 @@
         };
     }
     exports.reorderItems = reorderItems;
-    exports.hoverNextItem = simpleAction(HOVER_NEXT_ITEM);
-    exports.hoverPrevItem = simpleAction(HOVER_PREV_ITEM);
-    exports.clearHover = simpleAction(CLEAR_HOVER);
-    exports.selectHover = simpleAction(SELECT_HOVER);
+    exports.hoverNextItem = simpleAction(ActionType.HOVER_NEXT_ITEM);
+    exports.hoverPrevItem = simpleAction(ActionType.HOVER_PREV_ITEM);
+    exports.clearHover = simpleAction(ActionType.CLEAR_HOVER);
+    exports.selectHover = simpleAction(ActionType.SELECT_HOVER);
 });

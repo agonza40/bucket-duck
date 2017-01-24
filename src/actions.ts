@@ -47,16 +47,6 @@ export function simpleAction <T>(action:T):() => SimpleAction<T> {
   }
 }
 
-const {
-  SELECT_ITEM,
-  DESELECT_ITEM,
-  HOVER_NEXT_ITEM,
-  HOVER_PREV_ITEM,
-  CLEAR_HOVER,
-  SELECT_HOVER
-} = ActionType
-
-
 export interface ItemAction {
   type:ActionType.SELECT_ITEM | ActionType.DESELECT_ITEM | ActionType.HOVER_SELECTED | ActionType.HOVER_NON_SELECTED
   index:number
@@ -80,14 +70,14 @@ export function doubleClickItem (isSelectedItem:boolean, index:number):ItemActio
 
 export function selectItem (index:number):ItemAction {
   return {
-    type: SELECT_ITEM,
+    type: ActionType.SELECT_ITEM,
     index
   }
 }
 
 export function deselectItem (index:number):ItemAction {
   return {
-    type: DESELECT_ITEM,
+    type: ActionType.DESELECT_ITEM,
     index
   }
 }
@@ -139,13 +129,13 @@ export type SimpleBucketActions = SimpleAction<
   ActionType.SELECT_HOVER
 >
 
-export const hoverNextItem:() => SimpleBucketActions = simpleAction(HOVER_NEXT_ITEM)
+export const hoverNextItem:() => SimpleBucketActions = simpleAction(ActionType.HOVER_NEXT_ITEM)
 
-export const hoverPrevItem:() => SimpleBucketActions = simpleAction(HOVER_PREV_ITEM)
+export const hoverPrevItem:() => SimpleBucketActions = simpleAction(ActionType.HOVER_PREV_ITEM)
 
-export const clearHover:() => SimpleBucketActions = simpleAction(CLEAR_HOVER)
+export const clearHover:() => SimpleBucketActions = simpleAction(ActionType.CLEAR_HOVER)
 
-export const selectHover:() => SimpleBucketActions = simpleAction(SELECT_HOVER)
+export const selectHover:() => SimpleBucketActions = simpleAction(ActionType.SELECT_HOVER)
 
 export type Action<T> =
   ItemAction |
